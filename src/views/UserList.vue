@@ -12,18 +12,32 @@
         </thead>
           <tbody>
             <tr v-for="(user, index) in users" :key="user.id">
-              <td>{{ index + 1 }}</td>
-              <td>{{ user.group }}</td>
-              <td>{{ user.name }}</td>
-              <td>{{ user.phone }}</td>
-              <td>
-                <button @click="handleRemoveUser(user.id)">Remove</button>
-              </td>
+              <template v-if="editId === user.id">
+                <td>{{ index + 1 }}</td>
+                <td><input type="text" placeholder="Group" v-model="group"></td>
+                <td><input type="text" placeholder="Name" v-model="name"></td>
+                <td><input type="text" placeholder="Phone" v-model="phone"></td>
+                <td @click="handleEditUserEnd">
+                  <button>Save</button>
+                </td>
+              </template>
+              <template v-else>
+                <td>{{ index + 1 }}</td>
+                <td>{{ user.group }}</td>
+                <td>{{ user.name }}</td>
+                <td>{{ user.phone }}</td>
+                <td>
+                  <button @click="handleEditUserStart(user.id)">Edit</button>
+                </td>
+                <td>
+                  <button @click="handleRemoveUser(user.id)">Remove</button>
+                </td>
+              </template>
           </tr>
-          <tr>
+          <tr v-show="editId === null">
             <td>New</td>
-            <td><input type="text" class="form-control" placeholder="Group" v-model="group"/></td>
-            <td><input type="text" class="form-control" placeholder="Name" v-model="name"/></td>
+            <td><input type="text" placeholder="Group" v-model="group"/></td>
+            <td><input type="text" placeholder="Name" v-model="name"/></td>
             <td><input
                 type="text"
                 placeholder="Phone"
@@ -63,6 +77,7 @@ export default {
       group: '',
       name: '',
       phone: '',
+      editId: null,
     }
   },
   methods: {
@@ -77,6 +92,31 @@ export default {
         id: new Date().getTime().toString(),
       });
 
+      this.clearUserInput();
+    },
+    handleEditUserStart(id) {
+      this.clearUserInput();
+      this.editId = id;
+      
+      const {group, name, phone} = this.users.find(user => user.id === id);
+      this.group = group;
+      this.name = name;
+      this.phone = phone;
+    },
+    handleEditUserEnd() {
+      const {group, name, phone} = this;
+
+      const userIndex = this.users.findIndex(({id}) => id === this.editId);
+
+      this.$set(this.users, userIndex, {group, name, phone, id: this.editId});
+      // 아래와 같다.
+      // const newUsers = [...this.users];
+      // newUsers[userIndex] = {group, name, phone};
+      //
+      // this.users = newUsers;
+
+
+      this.editId = null;
       this.clearUserInput();
     },
     clearUserInput() {
