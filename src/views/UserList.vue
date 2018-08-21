@@ -1,5 +1,6 @@
 <template>
   <div class="user-list">
+    <h2>{{ title }}</h2>
      <table>
         <thead>
         <tr>
@@ -9,8 +10,14 @@
             <th>Phone</th>
         </tr>
         </thead>
-        <tbody>
-        </tbody>
+          <tbody>
+            <tr v-for="(user, index) in users" :key="user.id">
+              <td>{{ index + 1 }}</td>
+              <td>{{ user.group }}</td>
+              <td>{{ user.name }}</td>
+              <td>{{ user.phone }}</td>
+          </tr>
+      </tbody>
     </table>
   </div>
 </template>
@@ -20,6 +27,7 @@ export default {
   name: 'UserList',
   data() {
     return {
+      title: 'Basic List',
       users: [
         {
           id: '1', name: 'Tony', phone: '01099128812', group: 'Red',
