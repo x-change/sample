@@ -20,6 +20,21 @@
                 <button @click="handleRemoveUser(user.id)">Remove</button>
               </td>
           </tr>
+          <tr>
+            <td>New</td>
+            <td><input type="text" class="form-control" placeholder="Group" v-model="group"/></td>
+            <td><input type="text" class="form-control" placeholder="Name" v-model="name"/></td>
+            <td><input
+                type="text"
+                placeholder="Phone"
+                v-model="phone"
+                @keyup.ctrl.enter="handleAddUser"
+            />
+            </td>
+            <td>
+              <button type="button" @click="handleAddUser">Add</button>
+            </td>
+          </tr>
       </tbody>
     </table>
   </div>
@@ -45,11 +60,29 @@ export default {
           id: '4', name: 'Lee', phone: '01043621234', group: 'Yellow',
         },
       ],
+      group: '',
+      name: '',
+      phone: '',
     }
   },
   methods: {
     handleRemoveUser(id) {
       this.users = this.users.filter((user) => user.id !== id);
+    },
+    handleAddUser() {
+      const {group, name, phone} = this;
+
+      this.users.push({
+        group, name, phone,
+        id: new Date().getTime().toString(),
+      });
+
+      this.clearUserInput();
+    },
+    clearUserInput() {
+      this.group = '';
+      this.name = '';
+      this.phone = '';
     },
   }
 }
