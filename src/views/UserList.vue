@@ -1,7 +1,7 @@
 <template>
   <div class="user-list">
     <h2>{{ title }}</h2>
-     <table>
+      <table>
         <thead>
         <tr>
             <th>#</th>
@@ -16,6 +16,9 @@
               <td>{{ user.group }}</td>
               <td>{{ user.name }}</td>
               <td>{{ user.phone }}</td>
+              <td>
+                <button @click="handleRemoveUser(user.id)">Remove</button>
+              </td>
           </tr>
       </tbody>
     </table>
@@ -43,6 +46,11 @@ export default {
         },
       ],
     }
+  },
+  methods: {
+    handleRemoveUser(id) {
+      this.users = this.users.filter((user) => user.id !== id);
+    },
   }
 }
 </script>
