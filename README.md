@@ -1,2 +1,3 @@
 Sample
 init sample
+init
