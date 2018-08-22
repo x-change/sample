@@ -17,8 +17,8 @@
                 <td><input type="text" placeholder="Group" v-model="group"></td>
                 <td><input type="text" placeholder="Name" v-model="name"></td>
                 <td><input type="text" placeholder="Phone" v-model="phone"></td>
-                <td @click="handleEditUserEnd">
-                  <button>Save</button>
+                <td>
+                  <button @click="handleEditUserEnd">Save</button>
                 </td>
               </template>
               <template v-else>
@@ -59,7 +59,7 @@ export default {
   name: 'UserList',
   data() {
     return {
-      title: 'Basic List',
+      title: 'Conditional Rendering',
       users: [
         {
           id: '1', name: 'Tony', phone: '01099128812', group: 'Red',
