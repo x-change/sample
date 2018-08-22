@@ -1,60 +1,71 @@
 <template>
   <div class="user-list">
     <h2>{{ title }}</h2>
-      <table>
-        <thead>
+    <div class="search">
+      <label for="groupFilter">Group</label>
+      <select id="groupFilter" v-model="groupFilter">
+        <option selected value="">All</option>
+        <option v-for="group in groups" :key="group" :value="group">{{ group }}</option>
+      </select>
+    </div>
+    <table>
+      <thead>
         <tr>
             <th>#</th>
             <th>Group</th>
-            <th>Name</th>
+            <th>Name</th>F
             <th>Phone</th>
         </tr>
-        </thead>
-          <tbody>
-            <tr v-for="(user, index) in users" :key="user.id">
-              <template v-if="editId === user.id">
-                <td>{{ index + 1 }}</td>
-                <td><input type="text" placeholder="Group" v-model="group"></td>
-                <td><input type="text" placeholder="Name" v-model="name"></td>
-                <td><input type="text" placeholder="Phone" v-model="phone"></td>
-                <td>
-                  <button @click="handleEditUserEnd">Save</button>
-                </td>
-              </template>
-              <template v-else>
-                <td>{{ index + 1 }}</td>
-                <td>{{ user.group }}</td>
-                <td>{{ user.name }}</td>
-                <td>{{ user.phone }}</td>
-                <td>
-                  <button @click="handleEditUserStart(user.id)">Edit</button>
-                </td>
-                <td>
-                  <button @click="handleRemoveUser(user.id)">Remove</button>
-                </td>
-              </template>
-          </tr>
-          <tr v-show="editId === null">
-            <td>New</td>
-            <td><input type="text" placeholder="Group" v-model="group"/></td>
-            <td><input type="text" placeholder="Name" v-model="name"/></td>
-            <td><input
-                type="text"
-                placeholder="Phone"
-                v-model="phone"
-                @keyup.ctrl.enter="handleAddUser"
-            />
+      </thead>
+      <tbody>
+        <tr v-for="(user, index) in filteredUsersByGroup" :key="user.id">
+          <template v-if="editId === user.id">
+            <td>{{ index + 1 }}</td>
+            <td><input type="text" placeholder="Group" v-model="group"></td>
+            <td><input type="text" placeholder="Name" v-model="name"></td>
+            <td><input type="text" placeholder="Phone" v-model="phone"></td>
+            <td>
+              <button @click="handleEditUserEnd">Save</button>
+            </td>
+          </template>
+          <template v-else>
+            <td>{{ index + 1 }}</td>
+            <td>{{ user.group }}</td>
+            <td>{{ user.name }}</td>
+            <td>{{ user.phone }}</td>
+            <td>
+              <button @click="handleEditUserStart(user.id)">Edit</button>
             </td>
             <td>
-              <button type="button" @click="handleAddUser">Add</button>
+              <button @click="handleRemoveUser(user.id)">Remove</button>
             </td>
-          </tr>
+          </template>
+        </tr>
+        <tr v-show="editId === null">
+          <td>New</td>
+          <td><input type="text" placeholder="Group" v-model="group"/></td>
+          <td><input type="text" placeholder="Name" v-model="name"/></td>
+          <td>
+            <input
+              type="text"
+              placeholder="Phone"
+              v-model="phone"
+              @keyup.ctrl.enter="handleAddUser"
+            />
+          </td>
+          <td>
+            <button type="button" @click="handleAddUser">Add</button>
+          </td>
+        </tr>
       </tbody>
     </table>
   </div>
 </template>
 
 <script>
+import uniq from 'lodash/uniq';
+import isEmpty from 'lodash/isEmpty';
+
 export default {
   name: 'UserList',
   data() {
@@ -77,8 +88,19 @@ export default {
       group: '',
       name: '',
       phone: '',
+      groupFilter: '',
       editId: null,
     }
+  },
+  computed: {
+    filteredUsersByGroup() {
+      if (isEmpty(this.groupFilter)) return this.users;
+
+      return this.users.filter(({group}) => group === this.groupFilter);
+    },
+    groups() {
+      return uniq(this.users.map(({group}) => group));
+    },
   },
   methods: {
     handleRemoveUser(id) {
@@ -109,20 +131,15 @@ export default {
       const userIndex = this.users.findIndex(({id}) => id === this.editId);
 
       this.$set(this.users, userIndex, {group, name, phone, id: this.editId});
-      // 아래와 같다.
-      // const newUsers = [...this.users];
-      // newUsers[userIndex] = {group, name, phone};
-      //
-      // this.users = newUsers;
 
-
-      this.editId = null;
       this.clearUserInput();
     },
     clearUserInput() {
       this.group = '';
       this.name = '';
       this.phone = '';
+
+      this.editId = null;
     },
   }
 }
