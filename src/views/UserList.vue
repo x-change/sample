@@ -32,7 +32,7 @@
             <td>{{ index + 1 }}</td>
             <td>{{ user.group }}</td>
             <td>{{ user.name }}</td>
-            <td>{{ user.phone }}</td>
+            <td>{{ user.phone | phone}}</td>
             <td>
               <button @click="handleEditUserStart(user.id)">Edit</button>
             </td>
@@ -70,7 +70,7 @@ export default {
   name: 'UserList',
   data() {
     return {
-      title: 'Conditional Rendering',
+      title: 'Filter',
       users: [
         {
           id: '1', name: 'Tony', phone: '01099128812', group: 'Red',
@@ -90,6 +90,11 @@ export default {
       phone: '',
       groupFilter: '',
       editId: null,
+    }
+  },
+  filters: {
+    phone (value) {
+      return value.replace(/[^0-9]/g, '').replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
     }
   },
   computed: {
