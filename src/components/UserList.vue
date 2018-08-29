@@ -4,7 +4,7 @@
       <tr>
           <th>#</th>
           <th>Group</th>
-          <th>Name</th>F
+          <th>Name</th>
           <th>Phone</th>
       </tr>
     </thead>
