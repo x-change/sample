@@ -26,32 +26,6 @@ export default {
   data() {
     return {
       title: "Filter",
-      users: [
-        {
-          id: "1",
-          name: "Tony",
-          phone: "01099128812",
-          group: "Red"
-        },
-        {
-          id: "2",
-          name: "Leo",
-          phone: "01099128813",
-          group: "Blue"
-        },
-        {
-          id: "3",
-          name: "Bell",
-          phone: "01012345678",
-          group: "Red"
-        },
-        {
-          id: "4",
-          name: "Lee",
-          phone: "01043621234",
-          group: "Yellow"
-        }
-      ],
       groupFilter: ""
     };
   },
@@ -60,14 +34,17 @@ export default {
       if (isEmpty(this.groupFilter)) return this.users;
 
       return this.users.filter(({ group }) => group === this.groupFilter);
+    },
+    users() {
+      return this.$store.state.users;
     }
   },
   methods: {
     handleRemoveUser(id) {
-      this.users = this.users.filter(user => user.id !== id);
+      this.$store.dispatch('removeUser', id);
     },
     handleAddUser({ group, name, phone }) {
-      this.users.push({
+      this.$store.dispatch('addUser', {
         group,
         name,
         phone,
@@ -75,9 +52,7 @@ export default {
       });
     },
     handleEditUser({ group, name, phone, id }) {
-      const userIndex = this.users.findIndex(({ id: userId }) => userId === id);
-
-      this.$set(this.users, userIndex, { group, name, phone, id });
+      this.$store.dispatch('editUser', { group, name, phone, id });
     }
   },
   components: {
