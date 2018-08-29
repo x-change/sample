@@ -6,12 +6,13 @@
       :users="users"
       @change="groupFilter = arguments[0]"
     />
-    <user-list 
+    <user-list
       :users="filteredUsersByGroup"
       @addUser="handleAddUser"
       @editUser="handleEditUser"
       @removeUser="handleRemoveUser"
     />
+    <statistics />
   </div>
 </template>
 
@@ -20,6 +21,7 @@ import isEmpty from 'lodash/isEmpty';
 
 import UserSearch from "../components/UserSearch.vue";
 import UserList from "../components/UserList.vue";
+import Statistics from "./Statistics";
 
 export default {
   name: "telephoneDirectory",
@@ -56,6 +58,7 @@ export default {
     }
   },
   components: {
+    Statistics,
     UserSearch,
     UserList
   }

@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import countBy from 'lodash/countBy';
 
 Vue.use(Vuex)
 
@@ -59,6 +60,18 @@ export default new Vuex.Store({
     },
     editUser({commit}, user) {
       commit('editUser', user);
+    },
+  },
+  getters: {
+    countByGroup({users}) {
+      const groups = users.map(({group}) => group);
+      
+      return countBy(groups);
+    },
+    countByName({users}) {
+      const names = users.map(({name}) => name);
+  
+      return countBy(names);
     },
   },
 });
