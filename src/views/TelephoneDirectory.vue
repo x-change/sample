@@ -16,6 +16,7 @@
 </template>
 
 <script>
+import { mapState, mapActions } from 'vuex';
 import isEmpty from 'lodash/isEmpty';
 
 import UserSearch from "../components/UserSearch.vue";
@@ -26,36 +27,11 @@ export default {
   data() {
     return {
       title: "Filter",
-      users: [
-        {
-          id: "1",
-          name: "Tony",
-          phone: "01099128812",
-          group: "Red"
-        },
-        {
-          id: "2",
-          name: "Leo",
-          phone: "01099128813",
-          group: "Blue"
-        },
-        {
-          id: "3",
-          name: "Bell",
-          phone: "01012345678",
-          group: "Red"
-        },
-        {
-          id: "4",
-          name: "Lee",
-          phone: "01043621234",
-          group: "Yellow"
-        }
-      ],
       groupFilter: ""
     };
   },
   computed: {
+    ...mapState(['users']),
     filteredUsersByGroup() {
       if (isEmpty(this.groupFilter)) return this.users;
 
@@ -63,21 +39,18 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['removeUser', 'addUser', 'updateUser']),
     handleRemoveUser(id) {
-      this.users = this.users.filter(user => user.id !== id);
+      this.removeUser(id);
     },
-    handleAddUser({ group, name, phone }) {
-      this.users.push({
-        group,
-        name,
-        phone,
+    handleAddUser(user) {
+      this.addUser({
+        ...user,
         id: new Date().getTime().toString()
       });
     },
-    handleEditUser({ group, name, phone, id }) {
-      const userIndex = this.users.findIndex(({ id: userId }) => userId === id);
-
-      this.$set(this.users, userIndex, { group, name, phone, id });
+    handleEditUser(user) {
+      this.updateUser(user);
     }
   },
   components: {
