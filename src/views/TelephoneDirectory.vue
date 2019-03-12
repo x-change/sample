@@ -4,7 +4,7 @@
     <user-search
       label="Group"
       :users="users"
-      @change="groupFilter = arguments[0]"
+      @change="handleGroupFilterChange"
     />
     <user-list 
       :users="filteredUsersByGroup"
@@ -16,30 +16,24 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex';
-import isEmpty from 'lodash/isEmpty';
+import { mapState, mapActions, mapGetters } from 'vuex';
 
 import UserSearch from "../components/UserSearch.vue";
 import UserList from "../components/UserList.vue";
 
 export default {
-  name: "telephoneDirectory",
+  name: 'telephoneDirectory',
   data() {
     return {
-      title: "Filter",
-      groupFilter: ""
+      title: 'Filter',
     };
   },
   computed: {
-    ...mapState(['users']),
-    filteredUsersByGroup() {
-      if (isEmpty(this.groupFilter)) return this.users;
-
-      return this.users.filter(({ group }) => group === this.groupFilter);
-    }
+    ...mapState(['users', 'groupFilter']),
+    ...mapGetters(['filteredUsersByGroup']),
   },
   methods: {
-    ...mapActions(['removeUser', 'addUser', 'updateUser']),
+    ...mapActions(['removeUser', 'addUser', 'updateUser', 'changeGroupFilter']),
     handleRemoveUser(id) {
       this.removeUser(id);
     },
@@ -51,6 +45,9 @@ export default {
     },
     handleEditUser(user) {
       this.updateUser(user);
+    },
+    handleGroupFilterChange(groupFilter) {
+      this.changeGroupFilter(groupFilter);
     }
   },
   components: {

@@ -1,10 +1,12 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import isEmpty from 'lodash/isEmpty';
 
-Vue.use(Vuex)
+Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
+    groupFilter: '',
     users: [
       {
         id: "1",
@@ -43,6 +45,9 @@ export default new Vuex.Store({
       const userIndex = state.users.findIndex(({ id }) => id === user.id);
 
       Vue.set(state.users, userIndex, user);
+    },
+    changeGroupFilter(state, groupFilter) {
+      state.groupFilter = groupFilter;
     }
   },
   actions: {
@@ -52,9 +57,19 @@ export default new Vuex.Store({
     addUser({ commit }, user) {
       commit('addUser', user);
     },
-    updateUser({ commit}, user) {
+    updateUser({ commit }, user) {
       commit('updateUser', user)
-    }
+    },
+    changeGroupFilter({ commit }, groupFilter) {
+      commit('changeGroupFilter', groupFilter);
+    },
+  },
+  getters: {
+    filteredUsersByGroup({ users, groupFilter}) {
+      if (isEmpty(groupFilter)) return users;
+
+      return users.filter(({ group }) => group === groupFilter);
+    },
   }
 })
 
