@@ -1,38 +1,14 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import isEmpty from 'lodash/isEmpty';
+import * as userApi from './api/userApi';
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
     groupFilter: '',
-    users: [
-      {
-        id: "1",
-        name: "Tony",
-        phone: "01099128812",
-        group: "Red"
-      },
-      {
-        id: "2",
-        name: "Leo",
-        phone: "01099128813",
-        group: "Blue"
-      },
-      {
-        id: "3",
-        name: "Bell",
-        phone: "01012345678",
-        group: "Red"
-      },
-      {
-        id: "4",
-        name: "Lee",
-        phone: "01043621234",
-        group: "Yellow"
-      }
-    ],
+    users: [],
   },
   mutations: {
     removeUser(state, id) {
@@ -48,13 +24,21 @@ export default new Vuex.Store({
     },
     changeGroupFilter(state, groupFilter) {
       state.groupFilter = groupFilter;
+    },
+    setUserList(state, users) {
+      state.users = users;
     }
   },
   actions: {
     removeUser({ commit }, id) {
       commit('removeUser', id);
     },
-    addUser({ commit }, user) {
+    async addUser({ commit }, user) {
+      await fetch('/api/user',{
+        method: 'POST',
+        body: JSON.stringify(user),
+      });
+
       commit('addUser', user);
     },
     updateUser({ commit }, user) {
@@ -62,6 +46,12 @@ export default new Vuex.Store({
     },
     changeGroupFilter({ commit }, groupFilter) {
       commit('changeGroupFilter', groupFilter);
+    },
+    async fetchUserList({ commit }) {
+      const data = await userApi.fetchUserList();
+      const users = data.map(({ data }) => data);
+
+      commit('setUserList', users);
     },
   },
   getters: {

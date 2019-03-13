@@ -6,7 +6,7 @@
       :users="users"
       @change="handleGroupFilterChange"
     />
-    <user-list 
+    <user-list
       :users="filteredUsersByGroup"
       @addUser="handleAddUser"
       @editUser="handleEditUser"
@@ -33,7 +33,13 @@ export default {
     ...mapGetters(['filteredUsersByGroup']),
   },
   methods: {
-    ...mapActions(['removeUser', 'addUser', 'updateUser', 'changeGroupFilter']),
+    ...mapActions([
+        'removeUser',
+        'addUser',
+        'updateUser',
+        'changeGroupFilter',
+        'fetchUserList',
+    ]),
     handleRemoveUser(id) {
       this.removeUser(id);
     },
@@ -49,6 +55,9 @@ export default {
     handleGroupFilterChange(groupFilter) {
       this.changeGroupFilter(groupFilter);
     }
+  },
+  created() {
+    this.fetchUserList();
   },
   components: {
     UserSearch,
